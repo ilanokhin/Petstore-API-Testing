@@ -1,0 +1,44 @@
+name: Запуск автотестов
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Проверка кода репозитория
+        uses: actions/checkout@v6
+
+      - name: Восстановление образа из кеша
+        id: cache-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: docker-image.tar
+          key: docker-image-for-python-api-testing
+
+      - name: Загрузка образа с Docker Hub
+        run: docker pull ilanokhin/python-api-testing:latest
+
+      - name: Запуск API тестов
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/docker/project ilanokhin/python-api-testing:latest \
+            /bin/sh -c "pytest -n=auto --reruns=3 --reruns-delay=5"
+
+      - name: Создание Allure отчета
+        if: always()
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/docker/project ilanokhin/python-api-testing:latest \
+            /bin/sh -c "allure generate allure-data -c --single-file"
+
+      - name: Выгрузка Allure отчёта
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-report
+          path: allure-report
+          

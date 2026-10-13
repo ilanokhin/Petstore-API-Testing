@@ -2,9 +2,11 @@ FROM python:3.14-alpine
 WORKDIR /docker/project
 COPY requirements.txt .
 
-RUN apk add --no-cache openjdk11-jre curl  \
-  && curl -o allure.zip -L "https://github.com/allure-framework/allure2/releases/download/2.38.1/allure-2.38.1.zip" \
-  && unzip allure.zip -d /opt/allure \
-  && rm allure.zip \
-  && ln -s /opt/allure/allure-2.38.1/bin/allure /usr/bin/allure \
-  && pip install --no-cache-dir -r requirements.txt
+RUN apk add --no-cache openjdk11-jre-headless wget
+
+RUN VER=2.38.1 \
+    && wget -T 10 https://github.com/allure-framework/allure2/releases/download/$VER/allure-$VER.zip \
+    && unzip allure-$VER.zip -d /opt/allure && rm allure-$VER.zip \
+    && ln -s /opt/allure/allure-$VER/bin/allure /usr/bin/allure
+
+RUN pip install --no-cache-dir -r requirements.txt

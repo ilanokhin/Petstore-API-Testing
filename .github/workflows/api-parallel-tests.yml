@@ -1,0 +1,44 @@
+name: Параллельные API автотесты
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  api-tests:
+    name: Параллельные API автотесты
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Проверка кода репозитория
+        uses: actions/checkout@v6
+
+      - name: Сборка Docker образа
+        run: docker build -t python-api-testing:latest -f ./Dockerfile .
+        continue-on-error: true
+
+      - name: Загрузка образа с Docker Hub (если сборка не удалась)
+        if: failure()
+        run: |
+          docker pull ilanokhin/python-api-testing:latest
+          docker tag ilanokhin/python-api-testing:latest python-api-testing:latest
+
+      - name: Запуск API тестов
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/docker/project python-api-testing:latest \
+            /bin/sh -c "pytest -n=auto"
+
+      - name: Создание Allure отчета
+        if: always()
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/docker/project python-api-testing:latest \
+            /bin/sh -c "allure generate allure-data -c --single-file"
+
+      - name: Выгрузка Allure отчёта
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-report
+          path: allure-report

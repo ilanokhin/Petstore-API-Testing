@@ -12,17 +12,30 @@ jobs:
       - name: Проверка кода репозитория
         uses: actions/checkout@v6
 
-      - name: Сборка Docker образа
-        run: docker build -t python-api-testing:latest -f ./Dockerfile .
-        continue-on-error: true
+      - name: Проверка кэша
+        id: cache-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: api.tar
+          key: python-api-testing
 
-      - name: Загрузка образа с Docker Hub (если сборка не удалась)
-        if: failure()
+      - name: Загрузка образа в Docker (если был в кэше)
+        if: steps.cache-restore.outputs.cache-hit == 'true'
+        run: docker load -i api.tar
+
+      - name: Загрузка образа с Docker Hub (если не было в кэше)
+        id: docker-pull
+        if: steps.cache-restore.outputs.cache-hit != 'true'
         run: |
           docker pull ilanokhin/python-api-testing:latest
           docker tag ilanokhin/python-api-testing:latest python-api-testing:latest
+        continue-on-error: true
 
-      - name: Запуск API тестов
+      - name: Сборка Docker образа (если загрузка не удалась)
+        if: steps.docker-pull.outcome == 'failure'
+        run: docker build -t python-api-testing:latest -f ./Dockerfile .
+
+      - name: Запуск автотестов
         run: |
           docker run --rm -v ${{ github.workspace }}:/docker/project python-api-testing:latest \
             /bin/sh -c "pytest"

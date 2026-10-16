@@ -1,4 +1,5 @@
 import os
+
 import allure
 
 API_BASE_URL = os.getenv("API_BASE_URL", "https://petstore.swagger.io/v2")

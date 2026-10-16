@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional, List
 from enum import Enum
+from typing import Optional, List
+
+from pydantic import BaseModel
+
 from models.category_model import CategoryModel
 from models.tag_model import TagModel
 

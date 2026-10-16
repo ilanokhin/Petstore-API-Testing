@@ -1,7 +1,10 @@
 import json
+
+import allure
 from requests import Response
+
 from api_client import ApiClient
-from config import *
+from config import TEXT
 from models.api_response_model import ApiResponseModel
 from validator import Validator
 

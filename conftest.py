@@ -1,5 +1,6 @@
 import pytest
 from faker import Faker
+
 from api.pet import Pet
 from api.store import Store
 from api.user import User
@@ -9,13 +10,16 @@ from api.user import User
 def fake():
     return Faker()
 
+
 @pytest.fixture
 def pet():
     return Pet()
 
+
 @pytest.fixture
 def store():
     return Store()
+
 
 @pytest.fixture
 def user():

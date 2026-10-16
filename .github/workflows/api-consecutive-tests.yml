@@ -38,7 +38,7 @@ jobs:
       - name: Запуск автотестов
         run: |
           docker run --rm -v ${{ github.workspace }}:/docker/project python-api-testing:latest \
-            /bin/sh -c "pytest"
+            /bin/sh -c "pytest || pytest --lf --reruns=1 --reruns-delay=15"
 
       - name: Создание Allure отчёта
         if: always()

@@ -1,9 +1,10 @@
-import pytest
 import allure
-from payloads.pet_payload import PetPayload
-from payloads.order_payload import OrderPayload
-from payloads.user_payload import UserPayload
+import pytest
+
 from models.pet_model import PetModel
+from payloads.order_payload import OrderPayload
+from payloads.pet_payload import PetPayload
+from payloads.user_payload import UserPayload
 
 
 @allure.sub_suite("Тестирование Petstore API")

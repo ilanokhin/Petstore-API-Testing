@@ -1,5 +1,6 @@
 import requests
 from requests import Response
+
 from config import API_BASE_URL
 
 

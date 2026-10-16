@@ -1,8 +1,10 @@
+import allure
 from requests import Response
+
 from api.base_api import BaseApi
-from config import *
-from models.pet_model import PetModel
+from config import API_HEADERS
 from models.api_response_model import ApiResponseModel
+from models.pet_model import PetModel
 
 
 class Pet(BaseApi):

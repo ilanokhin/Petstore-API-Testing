@@ -1,6 +1,9 @@
 import json
-from config import *
+
+import allure
 from pydantic import ValidationError
+
+from config import TEXT
 
 
 class Validator:

@@ -1,7 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from typing import Optional
+
+from pydantic import BaseModel
 
 
 class OrderModel(BaseModel):

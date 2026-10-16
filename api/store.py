@@ -1,8 +1,10 @@
+import allure
 from requests import Response
+
 from api.base_api import BaseApi
-from config import *
-from models.order_model import OrderModel
+from config import API_HEADERS
 from models.api_response_model import ApiResponseModel
+from models.order_model import OrderModel
 
 
 class Store(BaseApi):

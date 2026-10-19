@@ -1,0 +1,26 @@
+name: Сборка докер образа для GitLab
+on:
+  workflow_dispatch:
+env:
+  REGISTRY: registry.gitlab.com
+  REPOSITORY: ilanokhin/gitlab-petstore-api-testing
+  IMAGE: python-api-testing:latest
+  TOKEN: ${{ secrets.GITLAB_REGISTRY_TOKEN }}
+
+jobs:
+  build-gitlab-image:
+    name: Сборка докер образа для GitLab
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Проверка кода репозитория
+        uses: actions/checkout@v6
+
+      - name: Вход в GitLab Registry
+        run: docker login -u ilanokhin -p $TOKEN $REGISTRY
+
+      - name: Сборка образа
+        run: docker build -t $REGISTRY/$REPOSITORY/$IMAGE -f ./Dockerfile .
+
+      - name: Отправка образа в GitLab Registry
+        run: docker push $REGISTRY/$REPOSITORY/$IMAGE
